@@ -55,6 +55,9 @@ class BSUArmControl:
         if time > 40:
             raise ValueError("Action will take longer than 40 seconds to \
                 complete")
+        # Use default value of 2 if only rotation
+        if distance == 0:
+            time = 2
         self._bot.arm.set_trajectory_time(time)
 
     def go_to_home_pose(self):
@@ -170,8 +173,8 @@ class BSUArmControl:
         distance = np.sqrt(x*x + y*y + z*z)
         self._update_trajectory_time(distance)
         success = self._bot.arm.set_ee_cartesian_trajectory(
-            x, y, z,
-            pitch, yaw, roll
+            x=x, y=y, z=z,
+            pitch=pitch, yaw=yaw, roll=roll
             )
         if success:
             self._x += x

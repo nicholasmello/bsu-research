@@ -4,21 +4,21 @@ import time
 
 
 class BSUVision:
-    def __init__(self, use_armtag=True, x=None, y=None, z=None):
+    def __init__(self, armtag_on_startup=True, x=None, y=None, z=None):
         """!
         Constructor for Vision Control
 
-        @param use_armtag If the robot has a tag on it
+        @param armtag_on_startup Check for armtag on creation
         @param x X coordinate of the arm in relation to the camera
         @param y Y coordinate of the arm in relation to the camera
         @param z Z coordinate of the arm in relation to the camera
         """
         self._armtag = InterbotixArmTagInterface()
         self._pcl = InterbotixPointCloudInterface()
-        if use_armtag:
+        if armtag_on_startup:
             self.update_armtag()
         else:
-            #TODO use xyz to set position
+            # TODO use xyz to set position
             pass
 
     def update_armtag(self):
