@@ -16,7 +16,8 @@ def main(tag=True):
         armtag = InterbotixArmTagInterface()
         # get the ArmTag pose
         bot.arm.set_ee_pose_components(y=-0.3, z=0.2)
-        bot.arm.set_ee_cartesian_trajectory(pitch=1.5)
+        bot.arm.set_ee_cartesian_trajectory(pitch=1)
+        bot.arm.set_ee_cartesian_trajectory(z=-0.1)
         time.sleep(0.5)
         armtag.find_ref_to_arm_base_transform()
         bot.arm.set_ee_pose_components(x=0.3, z=0.2)
