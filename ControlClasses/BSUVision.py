@@ -34,8 +34,8 @@ class BSUVision:
 
         @param sort_axis Direction to sort objects
         @param num_samples Number of samples to increase accuracy of data
-        @param reverse False is ascending order along access, True is descending
-        @return <bool> Success or failure 
+        @param reverse False is ascending order along axis, True is descending
+        @return <bool> Success or failure
         @return final_clusters If successful, contains a list of objects
         """
         # TODO Figure out what ref_frame is
@@ -45,3 +45,55 @@ class BSUVision:
             num_samples=num_samples,
             reverse=reverse
         )
+
+    def surface_detection(self, xs, ys, zs):
+        if max(xs)-min(xs) < max(ys)-min(ys):
+            # do fit
+            tmp_A = []
+            tmp_b = []
+            for i in range(len(zs)):
+                tmp_A.append([zs[i], ys[i], 1])
+                tmp_b.append(xs[i])
+            b = np.matrix(tmp_b).T
+            A = np.matrix(tmp_A)
+
+            # Manual solution
+            fit = (A.T * A).I * A.T * b
+            errors = b - A * fit
+            residual = np.linalg.norm(errors)
+
+            print("solution: %f z + %f x + %f = y" % (fit[0], fit[1], fit[2]))
+
+            # plot plane
+            Z,Y = np.meshgrid(np.arange(min(zs), max(zs)),
+                            np.arange(min(ys), max(ys)))
+            X = np.zeros(Z.shape)
+            for r in range(Z.shape[0]):
+                for c in range(Z.shape[1]):
+                    X[r,c] = fit[0] * Z[r,c] + fit[1] * Y[r,c] + fit[2]
+        else:
+            # do fit
+            tmp_A = []
+            tmp_b = []
+            for i in range(len(zs)):
+                tmp_A.append([zs[i], xs[i], 1])
+                tmp_b.append(ys[i])
+            b = np.matrix(tmp_b).T
+            A = np.matrix(tmp_A)
+
+            # Manual solution
+            fit = (A.T * A).I * A.T * b
+            errors = b - A * fit
+            residual = np.linalg.norm(errors)
+
+            # Best fit line equation
+            print("solution: %f z + %f x + %f = y" % (fit[0], fit[1], fit[2]))
+
+            # plot plane
+            Z,X = np.meshgrid(np.arange(min(zs), max(zs)),
+                            np.arange(min(xs), max(xs)))
+            Y = np.zeros(Z.shape)
+            for r in range(Z.shape[0]):
+                for c in range(Z.shape[1]):
+                    Y[r,c] = fit[0] * Z[r,c] + fit[1] * X[r,c] + fit[2]
+        return X, Y, Z
