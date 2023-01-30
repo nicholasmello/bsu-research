@@ -1,6 +1,7 @@
 from interbotix_perception_modules.armtag import InterbotixArmTagInterface
 from interbotix_perception_modules.pointcloud import InterbotixPointCloudInterface
 import time
+import numpy as np
 
 
 class BSUVision:

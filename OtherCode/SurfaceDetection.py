@@ -27,7 +27,7 @@ for i in range(0,n):
     zs = list(chain(zs, range(i, n)))
     zs = list(chain(zs, range(0, i)))
 
-ax.scatter(xs, ys, zs, marker='^')
+# ax.scatter(xs, ys, zs, marker='^')
 
 ax.set_xlabel('X Label')
 ax.set_ylabel('Y Label')
@@ -53,7 +53,7 @@ def surface_detection(xs, ys, zs):
         errors = b - A * fit
         residual = np.linalg.norm(errors)
 
-        print("solution: %f z + %f x + %f = y" % (fit[0], fit[1], fit[2]))
+        print("solution: %f z + %f y + %f = x" % (fit[0], fit[1], fit[2]))
 
         # plot plane
         Z,Y = np.meshgrid(np.arange(min(zs), max(zs)),
@@ -76,6 +76,7 @@ def surface_detection(xs, ys, zs):
         fit = (A.T * A).I * A.T * b
         errors = b - A * fit
         residual = np.linalg.norm(errors)
+        print(residual)
 
         print("solution: %f z + %f x + %f = y" % (fit[0], fit[1], fit[2]))
 
