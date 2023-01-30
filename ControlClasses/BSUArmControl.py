@@ -191,7 +191,7 @@ class BSUArmControl:
 
         @param rotation Rotation amount from current position
         """
-        self.rotate_absolute(self._rotation+rotation)
+        return self.rotate_absolute(self._rotation+rotation)
 
     def rotate_absolute(self, rotation):
         """!
@@ -204,5 +204,9 @@ class BSUArmControl:
         self._update_trajectory_time(distance)
         if not (-np.pi <= rotation and rotation <= np.pi):
             raise ValueError("Rotation outside of range -pi to pi")
-        self._bot.arm.set_single_joint_position("waist", rotation)
-        self._rotation = rotation
+        success = self._bot.arm.set_single_joint_position("waist", rotation)
+        if success:
+            self._rotation = rotation
+            self._xpos = radius * np.cos(rotation)
+            self._ypos = radius * np.cos(rotation)
+        return success
