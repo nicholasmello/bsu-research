@@ -86,3 +86,15 @@ def ArmModuleManager(execute_function,
         execute_function=execute_function,
         suppress_output=suppress_output,
         log_format=log_format)
+
+
+def BaseModuleManager(execute_function,
+                      suppress_output=True,
+                      log_format="%(asctime)s: %(message)s\r"):
+    process = "roslaunch turn_on_wheeltec_robot \
+        turn_on_wheeltec_robot.launch"
+    ProcessModuleManager(
+        process=process,
+        execute_function=execute_function,
+        suppress_output=suppress_output,
+        log_format=log_format)

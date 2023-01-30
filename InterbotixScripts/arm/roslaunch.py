@@ -1,8 +1,7 @@
 import os
 import signal
 import subprocess
-import time
-import traceback
+
 
 cmd = "roslaunch interbotix_xsarm_perception xsarm_perception.launch robot_model:=vx300s use_gripper:=false"
 ros = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
