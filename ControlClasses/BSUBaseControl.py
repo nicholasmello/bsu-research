@@ -31,9 +31,6 @@ class BSUBaseControl:
     def shutdown(self):
         self._pub.publish(Twist())
 
-    def __del__(self):
-        self.shutdown()
-
     @property
     def speed(self):
         return self._speed

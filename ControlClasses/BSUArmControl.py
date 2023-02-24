@@ -24,6 +24,9 @@ class BSUArmControl:
         # Known good position to set initial position values
         self._bot.arm.set_ee_pose_components(x=self._x, y=self._y, z=self._z)
 
+    def get__ee_transformation_matrix(self):
+        return self._bot.arm.get_ee_pose_command()
+
     @property
     def speed(self):
         """!

@@ -44,11 +44,22 @@ def get_xyz_points(cloud, skip_nans=True):
     return points[:, 0], points[:, 1], points[:, 2]
 
 
+def apply_offset(xs_in, ys_in, zs_in, x, y, z, yaw):
+    xs = xs_in
+    ys = ys_in
+    zs = zs_in
+    return xs, ys, zs
+
+
 def callback(data):
     global plt
     global ax
     xs, ys, zs = get_xyz_points(data)
+    xs, ys, zs = apply_offset(xs, ys, zs, 0, 0, 0, 0)
     ax.scatter(xs, ys, zs, marker='^')
+    ax.set_xlabel('$X$', fontsize=20, rotation=150)
+    ax.set_ylabel('$Y$')
+    ax.set_zlabel('$Z$', fontsize=30, rotation=60)
     return xs, ys, zs
 
 

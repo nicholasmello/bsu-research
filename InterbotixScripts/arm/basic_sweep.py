@@ -27,8 +27,9 @@ def main():
     bot.arm.set_ee_cartesian_trajectory(x=0.1, y=-0.3, z=0.35)
 
     # Sweep 0.3m by 0.3m area
-    sweep(bot, distance=0.3, height=0.3)
+    # sweep(bot, distance=0.3, height=0.3)
     bot.arm.set_trajectory_time(8.0)
+    print(bot.arm.get_ee_pose_command())
 
     # Return to Home/Sleep
     bot.arm.go_to_home_pose()
