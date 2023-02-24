@@ -29,7 +29,7 @@ class Point:
 
 
 class BSUVision:
-    def __init__(self, T_AB, stored_value=False):
+    def __init__(self, T_AB, stored_value=False, init_node=False):
         if stored_value:
             # TODO: When the arm is mounted get a stored value
             raise NotImplementedError("No stored value")
@@ -37,7 +37,7 @@ class BSUVision:
             self._T_BC = None
         else:
             # AR Tag
-            tag = InterbotixArmTagInterface(init_node=True)
+            tag = InterbotixArmTagInterface(init_node=init_node)
             tag.find_ref_to_arm_base_transform()
             transform = tag.trans
             T_CB = self._transform_to_array(transform.transform)
@@ -52,7 +52,7 @@ class BSUVision:
         g = tr.quaternion_matrix(q)
         g[0:3, -1] = p
         return g
-    
+
     def _get_points(self):
         cloud = rospy.wait_for_message("/pc_filter/pointcloud/filtered", PointCloud2)
         points = np.array(list(point for point in pc2.read_points(
@@ -71,6 +71,10 @@ class BSUVision:
             ).transformation(self._T_BC)
             ).transformation(self._T_AB))
         return points
+    
+    def get_plane(self, points=None):
+        if points is None:
+            points = self.get_points()
 
 
 if __name__ == "__main__":
