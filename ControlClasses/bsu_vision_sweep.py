@@ -14,7 +14,10 @@ def main():
 
     # Setup vision with AR tag
     vis = BSUVision(arm.get_ee_transformation_matrix())
-    print(vis.get_points())
+    arm.rotate_absolute(0)
+    points = vis.get_points()
+    point = points[len(points)//2]
+    arm.adjust_absolute_position(x=point.x, y=point.y, z=point.z)
 
     # Go home
     arm.go_to_home_pose()

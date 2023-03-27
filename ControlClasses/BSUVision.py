@@ -1,5 +1,6 @@
 import rospy
 import tf.transformations as tr
+import tf
 from geometry_msgs.msg import Transform
 from geometry_msgs.msg import TransformStamped
 import sensor_msgs.point_cloud2 as pc2
@@ -29,7 +30,10 @@ class Point:
 
 
 class BSUVision:
-    def __init__(self, T_AB, stored_value=False, init_node=False):
+    def __init__(self, T_AB, rotation=0, stored_value=False, init_node=False):
+        listener = tf.TransformListener()
+        p, q = listener.lookupTransform("camera_depth_frame", "camera_depth_frame", rospy.Time(0))
+        self._T = self._quarternion_to_array(p, q)
         if stored_value:
             # TODO: When the arm is mounted get a stored value
             raise NotImplementedError("No stored value")
@@ -40,15 +44,23 @@ class BSUVision:
             tag = InterbotixArmTagInterface(init_node=init_node)
             tag.find_ref_to_arm_base_transform()
             transform = tag.trans
-            T_CB = self._transform_to_array(transform.transform)
-            self._T_BC = tr.inverse_matrix(T_CB)
+            self._T_CB = self._transform_to_array(transform.transform)
+            self._T_BC = tr.inverse_matrix(self._T_CB)
         self._T_AB = T_AB
+        self._T_BA = tr.inverse_matrix(self._T_AB)
+        print(self._T_AB)
+        print(self._T_BC)
         print("Initialized BSUVision!\n")
 
     def _transform_to_array(self, msg):
         p = np.array([msg.translation.x, msg.translation.y, msg.translation.z])
         q = np.array([msg.rotation.x, msg.rotation.y,
                       msg.rotation.z, msg.rotation.w])
+        g = tr.quaternion_matrix(q)
+        g[0:3, -1] = p
+        return g
+
+    def _quarternion_to_array(self, p, q):
         g = tr.quaternion_matrix(q)
         g[0:3, -1] = p
         return g
@@ -64,12 +76,11 @@ class BSUVision:
         xs, ys, zs = self._get_points()
         points = []
         for i in range(len(xs)):
-            points.append((Point(
+            points.append(Point(
                 x=xs[i],
                 y=ys[i],
                 z=xs[i]
-            ).transformation(self._T_BC)
-            ).transformation(self._T_AB))
+            ).transformation(self._T))
         return points
     
     def get_plane(self, points=None):
